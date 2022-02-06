@@ -39,8 +39,10 @@ pipeline {
     /* } */
     stage ("test email") {
         steps {
+          script {
             sh 'echo test email'
           }
+        }
       }
   post {
 		always {
