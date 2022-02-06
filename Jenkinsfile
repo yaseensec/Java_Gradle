@@ -1,8 +1,8 @@
 pipeline {
   agent any
-  environment{
-    VERSION = "${env.BUILD_ID}"
-  }
+  /* environment{ */
+  /*   VERSION = "${env.BUILD_ID}" */
+  /* } */
   stages {
     /* stage("sonar quality check") { */
     /*   agent { */
@@ -29,17 +29,27 @@ pipeline {
     /*     } */
     /*   } */
     /* }         */
+    /* stage("Docker build and Docker Push to Nexus") { */
+    /*   steps { */
+    /*     script { */
+    /*       withCredentials([string(credentialsId: 'docker-nexus-pass', variable: 'nexus-pass')]) { */
+    /*         sh ''' */
+    /*           docker build -t 192.168.0.40:8083/springapp:${VERSION} . */
+    /*           docker login -u admin -p $nexus-pass 192.168.0.40:8083 */
+    /*           docker push 192.168.0.40:8083/script:${VERSION} */
+    /*           docker rmi 192.168.0.40:8083/script:${VERSION} */
+    /*         ''' */
+    /*       } */
+    /*     } */
+    /*   } */
+    /* } */
     stage("Docker build and Docker Push to Nexus") {
       steps {
         script {
           withCredentials([string(credentialsId: 'docker-nexus-pass', variable: 'nexus-pass')]) {
             sh '''
-              /* docker build -t 192.168.0.40:8083/springapp:${VERSION} . */
-              /* docker login -u admin -p $nexus-pass 192.168.0.40:8083 */
-              /* docker push 192.168.0.40:8083/springapp:${VERSION} */
               docker login -u admin -p $nexus-pass 192.168.0.40:8083
-              docker push 192.168.0.40:8083/springapp:12
-              /* docker rmi 192.168.0.40:8083/springapp:${VERSION} */
+              docker push 192.168.0.40:8083/script:${VERSION}
             '''
           }
         }
