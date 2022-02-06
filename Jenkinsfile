@@ -46,9 +46,9 @@ pipeline {
     stage("Docker build and Docker Push to Nexus") {
       steps {
         script {
-          withCredentials([string(credentialsId: 'docker-nexus-pass', variable: 'nexus-pass')]) {
+          withCredentials([string(credentialsId: 'docker-nexus-pass', variable: 'nexus_pass')]) {
             sh '''
-              docker login -u admin -p nexus9 192.168.0.40:8083
+              docker login -u admin -p $nexus_pass 192.168.0.40:8083
               docker push 192.168.0.40:8083/springapp:12
             '''
           }
