@@ -48,8 +48,8 @@ pipeline {
         script {
           withCredentials([string(credentialsId: 'docker-nexus-pass', variable: 'nexus-pass')]) {
             sh '''
-              docker login -u admin -p $nexus-pass 192.168.0.40:8083
-              docker push 192.168.0.40:8083/script:${VERSION}
+              docker login -u admin -p nexus9 192.168.0.40:8083
+              docker push 192.168.0.40:8083/springapp:12
             '''
           }
         }
