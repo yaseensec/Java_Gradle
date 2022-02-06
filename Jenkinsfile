@@ -4,39 +4,39 @@ pipeline {
     VERSION = "${env.BUILD_ID}"
   }
   stages {
-    /* stage("sonar quality check") { */
-    /*   agent { */
-    /*     docker { */
-    /*       image 'openjdk:11' */
-    /*       args '-u root:root' */
-    /*     } */
-    /*   } */
-    /*   steps { */
-    /*     script { */
-    /*       withSonarQubeEnv(credentialsId: 'sonar-token') { */
-    /*         sh 'chmod +x gradlew' */
-    /*         sh './gradlew sonarqube' */
-    /*       } */
-    /*       timeout(time: 5, unit: 'MINUTES') { */
-    /*         waitForQualityGate abortPipeline: true */
-    /*       } */
-    /*     } */
-    /*   } */
-    /* }         */
-    /* stage("Docker build and Docker Push to Nexus") { */
-    /*   steps { */
-    /*     script { */
-    /*       withCredentials([string(credentialsId: 'docker-nexus-pass', variable: 'nexus_pass')]) { */
-    /*         sh ''' */
-    /*           docker build -t 192.168.0.40:8083/springapp:${VERSION} . */
-    /*           docker login -u admin -p $nexus_pass 192.168.0.40:8083 */
-    /*           docker push 192.168.0.40:8083/springapp:${VERSION} */
-    /*           docker rmi 192.168.0.40:8083/springapp:${VERSION} */
-    /*         ''' */
-    /*       } */
-    /*     } */
-    /*   } */
-    /* } */
+    stage("sonar quality check") {
+      agent {
+        docker {
+          image 'openjdk:11'
+          args '-u root:root'
+        }
+      }
+      steps {
+        script {
+          withSonarQubeEnv(credentialsId: 'sonar-token') {
+            sh 'chmod +x gradlew'
+            sh './gradlew sonarqube'
+          }
+          timeout(time: 5, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+          }
+        }
+      }
+    }        
+    stage("Docker build and Docker Push to Nexus") {
+      steps {
+        script {
+          withCredentials([string(credentialsId: 'docker-nexus-pass', variable: 'nexus_pass')]) {
+            sh '''
+              docker build -t 192.168.0.40:8083/springapp:${VERSION} .
+              docker login -u admin -p $nexus_pass 192.168.0.40:8083
+              docker push 192.168.0.40:8083/springapp:${VERSION}
+              docker rmi 192.168.0.40:8083/springapp:${VERSION}
+            '''
+          }
+        }
+      }
+    }
     stage('indentifying misconfigs using datree in helm charts'){
       steps{
         script{
