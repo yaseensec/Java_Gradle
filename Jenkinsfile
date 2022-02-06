@@ -29,7 +29,7 @@ pipeline {
         }
       }
     }        
-    stage {
+    stage("Docker build and Docker Push to Nexus") {
       steps {
         script {
           withCredentials([string(credentialsId: 'docker-nexus-pass', variable: 'nexus-pass')]) {
